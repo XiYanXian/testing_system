@@ -1,0 +1,216 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+
+{% block title %}首页{% endblock %}
+
+{% block content %}
+<aside class="profile-info col-lg-9">
+    <!--features carousel start-->
+    <section class="panel">
+          <div class="flat-carousal">
+              <div id="owl-demo" class="owl-carousel owl-theme" style="opacity: 1; display: block;">
+                  <div class="owl-wrapper-outer">
+                      <div class="owl-wrapper" style="width: 4926px; left: 0px; display: block;">
+                          <div class="owl-item active" style="width: 821px;">
+                              <div class="item">
+                                  <h1>通知广告1</h1>
+                                  <div class="text-center">
+                                      <a href="javascript:;" class="view-all">View All</a>
+                                  </div>
+                              </div>
+                          </div>
+                          <div class="owl-item" style="width: 821px;">
+                              <div class="item">
+                                  <h1>通知广告2</h1>
+                                  <div class="text-center">
+                                      <a href="javascript:;" class="view-all">View All</a>
+                                  </div>
+                              </div>
+                          </div>
+                          <div class="owl-item" style="width: 821px;">
+                              <div class="item">
+                                  <h1>通知广告3</h1>
+                                  <div class="text-center">
+                                      <a href="javascript:;" class="view-all">View All</a>
+                                  </div>
+                              </div>
+                          </div>
+                      </div>
+                  </div>
+
+                  <div class="owl-controls clickable">
+                      <div class="owl-pagination">
+                          <div class="owl-page active"><span class=""></span></div>
+                          <div class="owl-page"><span class=""></span></div>
+                          <div class="owl-page"><span class=""></span></div>
+                      </div>
+                      <div class="owl-buttons">
+                          <div class="owl-prev">prev</div>
+                          <div class="owl-next">next</div>
+                      </div>
+                  </div>
+              </div>
+          </div>
+    </section>
+    <!--features carousel end-->
+
+    <section class="panel">
+          <header class="panel-heading">
+              最新动态
+          </header>
+          <div class="panel-body">
+
+
+              <div class="timeline-messages">
+                  <!-- Comment -->
+                  {% for i in userlog  %}
+                  <div class="msg-time-chat">
+                      <a href="#" class="message-img"><img class="avatar" src="{{ i.user.avator_sor.url }}" alt=""></a>
+                      <div class="message-body {% if forloop.counter|divisibleby:2 %}msg-out{% else %}msg-in{% endif %}">
+                          <span class="arrow"></span>
+                          <div class="text">
+                              <p class="attribution"><a href="#">{{ i.user.username }}</a>{{ i.create_time }}</p>
+                              {% if i.operate == '1' %}
+                                  {% if i.question %}
+                                      <p>收藏了<a href="{% url 'repo:question_detail' i.question.id %}">{{ i.question.title }}</a></p>
+                                  {% else %}
+                                      <p>收藏了<a href="{% url 'repo:question_detail' i.answer.question.id %}">{{ i.answer.question.title }}</a></p>
+                                  {% endif %}
+                              {% elif i.operate == '2' %}
+                                  {% if i.question %}
+                                      <p>取消收藏了<a href="{% url 'repo:question_detail' i.question.id %}">{{ i.question.title }}</a></p>
+                                  {% else %}
+                                      <p>取消收藏了<a href="{% url 'repo:question_detail' i.answer.question.id %}">{{ i.answer.question.title }}</a></p>
+                                  {% endif %}
+                              {% else %}
+                                  <p>回答了<a href="{% url 'repo:question_detail' i.question.id %}">{{ i.question.title }}</a></p>
+                              {% endif %}
+                          </div>
+                      </div>
+                  </div>
+                  {% endfor %}
+                  <!-- /comment -->
+
+                  <!-- Comment -->
+{#                  <div class="msg-time-chat">#}
+{#                      <a href="#" class="message-img"><img class="avatar" src="{% static 'img/1534407125.png' %}" alt=""></a>#}
+{#                      <div class="message-body msg-in">#}
+{#                          <span class="arrow"></span>#}
+{#                          <div class="text">#}
+{#                              <p class="attribution"><a href="#">aaa</a>Aug. 16, 2018, 8:13 a.m.</p>#}
+{#                              <p>回答了<a href="http://127.0.0.1:8000/question/7679/">sql优化</a></p>#}
+{#                          </div>#}
+{#                      </div>#}
+{#                  </div>#}
+                  <!-- /comment -->
+
+              </div>
+          </div>
+    </section>
+
+    <!--最近刷题的同学 start-->
+    <section class="panel">
+        <header class="panel-heading">
+          最近刷题的同学
+        </header>
+        <div class="panel-body">
+             {% for user in recent_user %}
+             <div class="task-thumb">
+                 <img src="{{ user.avator_sor.url }}" alt="">
+                 <div class="clearfix"></div>
+                 <a href="#">{{ user.username }}</a>
+             </div>
+            {% endfor %}
+        </div>
+    </section>
+    <!--custom chart end-->
+</aside>
+<aside class="profile-info col-lg-3">
+  <!--follower start-->
+  <section class="panel">
+      <div class="follower">
+          <div class="panel-body">
+              <div class="follow-ava">
+                  <img src="{{ user.avator_sor.url }}" alt="">
+              </div>
+              <h4>{{ user }}</h4>
+              <h4>您已完成{{ answer_num }}道面试题，加油！</h4>
+          </div>
+      </div>
+      <footer class="follower-foot">
+          <ul>
+              <li>
+                  <h4>{{ answer_num }}/{{ question_all }}</h4>
+                  <p>刷题量：{% widthratio answer_num question_all 100 %} %</p>
+              </li>
+              <li>
+                  <h4>第{{ rank.rank }}名</h4>
+                  <p>当前排名：{{ rank.rank }}/{{ user_sum }}</p>
+              </li>
+          </ul>
+      </footer>
+  </section>
+  <!--follower end-->
+  <!--热门题目 start-->
+  <section class="panel">
+      <div class="panel-body progress-panel">
+          <div class="task-progress">
+              <h1>热门算法题目</h1>
+              <p>答题人数最多的题目</p>
+          </div>
+      </div>
+      <table class="table table-hover personal-task">
+          <tbody>
+              {% for item in hot_questions %}
+              <tr>
+                  <td>{{ forloop.counter }}</td>
+                  <td>
+                      <a href="{% url 'repo:question_detail' item.id %}" title="{{ item.title }}">{{ item.id }}. {{ item.title|truncatechars:10 }}</a>
+                  </td>
+                  <td>
+                      {% if item.grade == 1 %}
+                        <span class="label label-info">入门</span>
+                      {% elif item.grade == 2 %}
+                        <span class="label label-info">简单</span>
+                      {% elif item.grade == 3 %}
+                        <span class="label label-info">一般</span>
+                      {% elif item.grade == 4 %}
+                        <span class="label label-info">困难</span>
+                      {% elif item.grade == 5 %}
+                        <span class="label label-info">超难</span>
+                      {% endif %}
+                  </td>
+              </tr>
+              {% endfor %}
+
+          </tbody>
+      </table>
+  </section>
+  <!--work progress end-->
+  <!--近30天刷题用户排行榜 start-->
+  <section class="panel">
+      <div class="panel-body progress-panel">
+          <div class="task-progress">
+              <h1>近30天刷题用户排行榜</h1>
+              <p></p>
+          </div>
+      </div>
+      <table class="table table-hover personal-task">
+          <tbody>
+          {% for item in hot_user %}
+              <tr>
+                  <td>{{ forloop.counter }}</td>
+                  <td>
+                      <a href="">{{ item.user__username }}</a>
+                  </td>
+                  <td>
+                      <span>{{ item.id__count }}/{{ question_all }}</span>
+                  </td>
+              </tr>
+          {% endfor %}
+          </tbody>
+      </table>
+  </section>
+  <!--work progress end-->
+</aside>
+{% endblock %}
